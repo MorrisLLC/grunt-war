@@ -1,11 +1,9 @@
 # grunt-war
 
-> All your war belong to us.
+> Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container. 
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
-
-If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
 npm install grunt-war --save-dev
@@ -24,63 +22,48 @@ In your project's Gruntfile, add a section named `war` to the data object passed
 
 ```js
 grunt.initConfig({
-  war: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
+
+     / *
+       * Build a WAR (web archive) without Maven or the JVM installed.
+       */
+      war: {
+        target: {
+          options: {
+            war_verbose: true,
+            war_compression: 'DEFLATE', // choices are 'NONE' or 'DEFLATE'.
+            war_folder: 'war',          // Folder needs to exist.
+            war_filename: 'webmagic',   // .war will be appended automatically if extension is omitted.
+            webxml_welcome: 'index.html',
+            webxml_display_name: 'Web Magic',
+            webxml_mime_mapping: [
+                { extension: 'woff', mime_type: 'application/font-woff' }
+              ]
+          },
+          files: [
+            {
+              expand: true,
+              src: ['<%= build_dir %>/**'],
+              dest: 'war/'
+            }
+          ]
+        }
+      }
 });
 ```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.war_verbose
+Type: `Boolean`
+Default value: `false`
 
-A string value that is used to do something with whatever.
+Logs progress to the grunt console log.
 
 #### options.punctuation
-Type: `String`
-Default value: `'.'`
+Type: `war_compression`
+Default value: `'DEFLATE'`
 
-A string value that is used to do something else with whatever else.
-
-### Usage Examples
-
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  war: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  war: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
+Compress ('DEFLATE') or leave uncompressed ('NONE').
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
