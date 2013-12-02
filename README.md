@@ -23,7 +23,7 @@ In your project's Gruntfile, add a section named `war` to the data object passed
 ```js
 grunt.initConfig({
 
-     / *
+      /*
        * Build a WAR (web archive) without Maven or the JVM installed.
        */
       war: {
