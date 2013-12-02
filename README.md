@@ -59,7 +59,7 @@ Default value: `false`
 
 Logs progress to the grunt console log.
 
-#### options.punctuation
+#### options.war_compression
 Type: `war_compression`
 Default value: `'DEFLATE'`
 
