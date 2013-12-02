@@ -15,10 +15,10 @@ module.exports = function ( grunt ) {
     var fs = require( 'fs' );
 
     grunt.registerMultiTask( 'war', 'All your war are belong to us.', function () {
-        // Merge task-specific and/or target-specific options with these defaults.
+
         var options = this.options( {
             war_compression: 'DEFLATE',
-            war_output_folder: 'war',
+            war_output_folder: 'test',
             war_filename: 'test',
             war_verbose: false,
             webxml: undefined,
@@ -32,6 +32,7 @@ module.exports = function ( grunt ) {
         try {
             fs.unlinkSync( warName( options ) );
         } catch ( err ) {
+            // ...
         }
 
         try {
@@ -41,7 +42,6 @@ module.exports = function ( grunt ) {
             grunt.log.writeln( 'Unable to generate web.xml: ' + err );
         }
 
-        // Iterate over all specified file groups.
         this.files.forEach( function ( f ) {
             try {
                 var file_name = f.src[0];
@@ -87,29 +87,31 @@ module.exports = function ( grunt ) {
 
 
     var webxml = function ( opts ) {
-        if ( !(opts.webxml === undefined) ) {
-            return opts.webxml( opts );
+        if ( opts.webxml === undefined ) {
+            var xml;
+
+            xml = '<web-app version="' + opts.webxml_version + '" xmlns="http://java.sun.com/xml/ns/javaee"\n';
+            xml += 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n';
+            xml += 'xsi:schemaLocation="' + opts.webxml_schemaLocation + '">\n';
+            xml += '<display-name>' + opts.webxml_display_name + '</display-name>\n';
+            xml += '<welcome-file-list>\n<welcome-file>' + opts.webxml_welcome + '</welcome-file>\n</welcome-file-list>\n';
+
+            if ( opts.webxml_mime_mapping === undefined ) {
+                // ... nothing to map
+            } else {
+                opts.webxml_mime_mapping.forEach( function ( mime_map ) {
+                    xml += '<mime-mapping>\n';
+                    xml += '<extension>' + mime_map.extension + '</extension>\n';
+                    xml += '<mime-type>' + mime_map.mime_type + '</mime-type>\n';
+                    xml += '</mime-mapping>\n';
+                } );
+            }
+
+            xml += '</web-app>\n';
+
+            return xml;
         }
 
-        var xml;
-
-        xml = '<web-app version="' + opts.webxml_version + '" xmlns="http://java.sun.com/xml/ns/javaee"\n';
-        xml += 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n';
-        xml += 'xsi:schemaLocation="' + opts.webxml_schemaLocation + '">\n';
-        xml += '<display-name>' + opts.webxml_display_name + '</display-name>\n';
-        xml += '<welcome-file-list>\n<welcome-file>' + opts.webxml_welcome + '</welcome-file>\n</welcome-file-list>\n';
-
-        if ( !(opts.webxml_mime_mapping === undefined) ) {
-            opts.webxml_mime_mapping.forEach( function ( mime_map ) {
-                xml += '<mime-mapping>\n';
-                xml += '<extension>' + mime_map.extension + '</extension>\n';
-                xml += '<mime-type>' + mime_map.mime_type + '</mime-type>\n';
-                xml += '</mime-mapping>\n';
-            } );
-        }
-
-        xml += '</web-app>\n';
-
-        return xml;
+        return opts.webxml( opts );
     };
 };

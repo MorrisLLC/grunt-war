@@ -1,10 +1,10 @@
 {
   "name": "grunt-war",
-  "description": "All your war belong to us.",
+  "description": "Pure JS implementation for generating a WAR file.",
   "version": "0.1.0",
   "homepage": "https://github.com/wibobm/grunt-war",
   "author": {
-    "name": "rmorris",
+    "name": "Robert Morris",
     "email": "wibobm@gmail.com"
   },
   "repository": {
@@ -38,6 +38,6 @@
     "grunt": "~0.4.2"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin", "maven", "war", "maven-war-plugin"
   ]
 }
