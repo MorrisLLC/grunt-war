@@ -31,7 +31,7 @@ grunt.initConfig({
           options: {
             war_verbose: true,
             war_compression: 'DEFLATE', // choices are 'NONE' or 'DEFLATE'.
-            war_folder: 'war',          // Folder needs to exist.
+            war_output_folder: 'war',          // Folder needs to exist.
             war_filename: 'webmagic',   // .war will be appended automatically if extension is omitted.
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
