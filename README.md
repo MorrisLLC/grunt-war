@@ -30,9 +30,9 @@ grunt.initConfig({
         target: {
           options: {
             war_verbose: true,
-            war_compression: 'DEFLATE', // choices are 'NONE' or 'DEFLATE'.
-            war_output_folder: 'war',          // Folder needs to exist.
-            war_filename: 'webmagic',   // .war will be appended automatically if extension is omitted.
+            war_compression: 'DEFLATE', 
+            war_dist_folder: '<%= build_dir %>',     
+            war_filename: 'webmagic',   
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
             webxml_mime_mapping: [
@@ -42,8 +42,7 @@ grunt.initConfig({
           files: [
             {
               expand: true,
-              src: ['<%= build_dir %>/**'],
-              dest: 'war/'
+              src: ['<%= build_dir %>/**']
             }
           ]
         }
@@ -64,6 +63,12 @@ Type: `war_compression`
 Default value: `'DEFLATE'`
 
 Compress ('DEFLATE') or leave uncompressed ('NONE').
+
+#### options.war_dist_folder
+Type: `war_dist_folder`
+Default value: `'test'`
+
+Folder the WAR will be generated into.  This folder currently has to exist when this task runs.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
