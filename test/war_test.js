@@ -41,7 +41,7 @@ exports.war = {
 //   var actual = grunt.file.read('tmp/custom_options');
 //    var expected = grunt.file.read('test/expected/custom_options');
 //    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
-
+    test.equal('','','');
     test.done();
   },
 };
