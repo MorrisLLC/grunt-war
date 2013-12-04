@@ -53,7 +53,7 @@ module.exports = function ( grunt ) {
         }
 
         var preamble_length = options.war_dist_folder.length + 1;
-        if ( /\/$/.test( opts.war_dist_folder ) || /\\$/.test( opts.war_dist_folder ) ) {
+        if ( /\/$/.test( options.war_dist_folder ) || /\\$/.test( options.war_dist_folder ) ) {
             preamble_length -= 1;
         }
 
