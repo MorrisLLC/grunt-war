@@ -29,10 +29,10 @@ grunt.initConfig({
       war: {
         target: {
           options: {
+            war_dist_folder: '<%= build_dir %>',
             war_verbose: true,
-            war_compression: 'DEFLATE', 
-            war_dist_folder: '<%= build_dir %>',     
-            war_filename: 'webmagic',   
+            war_name: 'webmagic',
+            war_extras: [{filename: 'grunt-war-credits.txt', data: 'Thank you @wibobm!\n'}],
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
             webxml_mime_mapping: [
@@ -52,23 +52,61 @@ grunt.initConfig({
 
 ### Options
 
+#### options.war_dist_folder
+Type: `'string'`
+Default value: `'test'`
+
+This is the folder that the war will be placed. This folder has to exist before this task is run.
+
+#### options.war_name
+Type: `'string'`
+Default value: `'grunt'`
+
+#### options.war_extras
+Type: `'Array'`
+Default value: `[]`
+
+A list of files and folders entries that are to be included in the war. Each object in the array has
+keys `filename` and `data` example: `{ filename: 'name_of_file.ext', data: file_data }`.  If the key `data`
+is omitted then an empty folder called `filename` will be added to the WAR. The value of key  `data` can
+either be a `string` or a function that returns a `string`.
+
 #### options.war_verbose
-Type: `Boolean`
+Type: `'boolean'`
 Default value: `false`
 
 Logs progress to the grunt console log.
 
 #### options.war_compression
-Type: `war_compression`
+Type: `'string'`
 Default value: `'DEFLATE'`
 
 Compress ('DEFLATE') or leave uncompressed ('NONE').
 
-#### options.war_dist_folder
-Type: `war_dist_folder`
-Default value: `'test'`
+#### options.webxml_welcome
+Type: `'string'`
+Default value: `'index.html'`
 
-Folder the WAR will be generated into.  This folder currently has to exist when this task runs.
+#### options.webxml_display_name
+Type: `'string'`
+Default value: `'Grunt WAR'`
+
+#### options.webxml_webapp_extras
+Type: `'Array'`
+Default value: `[]`
+
+#### options.webxml_mime_mapping
+Type: `'Array'`
+Default value: `[]`
+
+An array of objects with properties `extension` and `mime_type`.
+
+#### options.webxml_webapp_extras
+Type: `'Array'`
+Default value: `[]`
+
+An array of objects that are either `'string'` or `'function'` that return `'string'`.  These entries are
+included directly into the generated web.xml.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

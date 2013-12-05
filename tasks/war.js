@@ -6,21 +6,22 @@
  * Licensed under the MIT license.
  */
 
-module.exports = function ( grunt ) {
+module.exports = function (grunt) {
 
     'use strict';
 
-    var path = require( 'path' );
-    var zip = require( 'node-zip' )();
-    var fs = require( 'fs' );
+    var path = require('path');
+    var zip = require('node-zip')();
+    var fs = require('fs');
 
-    grunt.registerMultiTask( 'war', 'All your war are belong to us.', function () {
+    grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
 
-        var options = this.options( {
+        var options = this.options({
             war_dist_folder: 'test',
             war_name: 'grunt',
             war_compression: 'DEFLATE',
             war_verbose: false,
+            war_extras: [],
             webxml: webXML,
             webxml_welcome: 'index.html',
             webxml_display_name: 'Grunt WAR',
@@ -28,81 +29,45 @@ module.exports = function ( grunt ) {
             webxml_webapp_xmlns: 'http://java.sun.com/xml/ns/javaee',
             webxml_webapp_xmlns_xsi: 'http://www.w3.org/2001/XMLSchema-instance',
             webxml_webapp_xsi_schema_location: 'http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd',
-            webxml_mime_mapping: []
-        } );
+            webxml_mime_mapping: [],
+            webxml_webapp_extras: []
+        });
 
-        try {
-            fs.unlinkSync( warName( options ) );
-        } catch ( err ) {
-            // ...
-        }
+        war(zip, options, [
+            {filename: 'WEB-INF/web.xml', data: webXML},
+            {filename: 'META-INF'}
+        ]);
 
-        try {
-            zip.folder( 'META-INF' );
-        } catch ( err ) {
-            grunt.log.writeln( 'Unable to generate folder META-INF: ' + err );
-        }
+        war(zip, options, options.war_extras);
 
-        try {
-            zip.file( 'WEB-INF/web.xml', webXML( options ) );
-            if ( options.war_verbose ) {
-                grunt.log.writeln( 'Generated web.xml' );
-            }
-        } catch ( err ) {
-            grunt.log.writeln( 'Unable to generate web.xml: ' + err );
-        }
+        var build_folder_length = normalize(options.war_dist_folder).length;
 
-        var preamble_length = options.war_dist_folder.length + 1;
-        if ( /\/$/.test( options.war_dist_folder ) || /\\$/.test( options.war_dist_folder ) ) {
-            preamble_length -= 1;
-        }
-
-        this.files.forEach( function ( f ) {
+        this.files.forEach(function (each) {
             try {
-                var file_name = f.src[0];
-                if ( !grunt.file.isDir( file_name ) ) {
-                    var data = fs.readFileSync( file_name, 'binary' );
-                    var zip_entry = (file_name).substring( preamble_length );
-
-                    zip.file( zip_entry, data );
-
-                    if ( options.war_verbose ) {
-                        grunt.log.writeln( 'adding: "' + file_name );
-                    }
+                var file_name = each.src[0];
+                if (!grunt.file.isDir(file_name)) {
+                    war(zip, options, {
+                        filename: (file_name).substring(build_folder_length),
+                        data: fs.readFileSync(file_name, 'binary')
+                    });
                 }
-            } catch ( err ) {
-                grunt.log.writeln( 'Unable to read file: (' + f.src + ') error: ' + err );
+            } catch (err) {
+                grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
+                throw err;
             }
-        } );
+        });
 
         try {
-            if ( options.war_verbose ) {
-                grunt.log.writeln( 'Generating war' );
-            }
-
-            var data = zip.generate( {type: 'nodebuffer', compression: options.war_compression} );
-            fs.writeFileSync( warName( options ), data, 'binary' );
-
-        } catch ( err ) {
-            grunt.log.writeln( 'Error creating war: ' + err );
+            log(options, 'Generating ' + warName(options));
+            var data = zip.generate({type: 'nodebuffer', compression: options.war_compression});
+            fs.writeFileSync(warName(options), data, 'binary');
+        } catch (err) {
+            grunt.log.error('Error creating war: ' + err);
+            throw err;
         }
-    } );
+    });
 
-    var warName = function ( opts ) {
-        var name = '';
-        if ( /\/$/.test( opts.war_dist_folder ) || /\\$/.test( opts.war_dist_folder ) ) {
-            name = opts.war_dist_folder + opts.war_name;
-        } else {
-            name = opts.war_dist_folder + path.sep + opts.war_name;
-        }
-        if ( !/war$/.test( name ) ) {
-            name += '.war';
-        }
-        return name;
-    };
-
-
-    var webXML = function ( opts ) {
+    var webXML = function (opts) {
         var xml;
 
         xml = '<web-app';
@@ -117,18 +82,80 @@ module.exports = function ( grunt ) {
         xml += '<welcome-file>' + opts.webxml_welcome + '</welcome-file>';
         xml += '</welcome-file-list>\n';
 
-        if ( opts.webxml_mime_mapping ) {
-            opts.webxml_mime_mapping.forEach( function ( mime_map ) {
+        if (opts.webxml_mime_mapping) {
+            opts.webxml_mime_mapping.forEach(function (mime_map) {
                 xml += '<mime-mapping>';
                 xml += '<extension>' + mime_map.extension + '</extension>';
                 xml += '<mime-type>' + mime_map.mime_type + '</mime-type>';
                 xml += '</mime-mapping>\n';
-            } );
+            });
+        }
+
+        if (Array.isArray(opts.webxml_webapp_extras)) {
+            opts.webxml_webapp_extras.forEach(function (each) {
+                if (typeof each === 'function') {
+                    xml += each(opts);
+                } else if (typeof each === 'string') {
+                    xml += each;
+                } else {
+                    grunt.log.error('options.webxml_webapp_extras invalid: ' + each);
+                }
+            });
         }
 
         xml += '</web-app>\n';
 
         return xml;
+    };
 
+    var war = function (target, opts, extras) {
+        if (extras === undefined) {
+            return;
+        }
+
+        var addEntry = function (each) {
+            try {
+                if (typeof each.data === 'function') {
+                    target.file(each.filename, each.data(opts));
+                } else {
+                    if (each.data === undefined) {
+                        target.folder(each.filename);
+                    } else {
+                        target.file(each.filename, each.data);
+                    }
+                }
+                log(opts, 'adding ' + each.filename);
+            } catch (err) {
+                grunt.log.error('Error adding: ' + each + ' to war: ' + err);
+                throw err;
+            }
+        };
+
+        if (Array.isArray(extras)) {
+            extras.forEach(addEntry);
+        } else if (extras.hasOwnProperty('filename')) {
+            addEntry(extras);
+        } else {
+            grunt.log.error('Invalid format of war_extras element: ' + extras);
+        }
+    };
+
+    var warName = function (opts) {
+        return normalize(opts.war_dist_folder) + opts.war_name + ((/\.war$/).test(opts.war_name) ? '' : '.war');
+    };
+
+    var normalize = function (folder) {
+        if ((/\/$/).test(folder) || (/\\$/).test(folder)) {
+            return folder.substr(0, folder.length - 1) + path.sep;
+        }
+        return folder + path.sep;
+    };
+
+    var log = function (opts, msg) {
+        if (opts.war_verbose) {
+            grunt.log.writeln(msg);
+        } else {
+            grunt.log.debug(msg);
+        }
     };
 };
