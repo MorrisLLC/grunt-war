@@ -113,10 +113,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
-#### 0.1.4
+#### 0.2.0
 
 * Renamed `options.war_filename` to `options.war_name`.
 * Added `options.war_extras`
 * Added `options.webxml_webapp_extras`.
 
-#### 0.1.3 Initial
+#### 0.1.4 Initial
