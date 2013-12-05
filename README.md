@@ -112,4 +112,11 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+
+#### 0.1.4
+
+* Renamed `options.war_filename` to `options.war_name`.
+* Added `options.war_extras`
+* Added `options.webxml_webapp_extras`.
+
+#### 0.1.3 Initial
