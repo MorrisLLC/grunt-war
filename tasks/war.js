@@ -72,7 +72,7 @@ module.exports = function (grunt) {
 
         xml = '<web-app';
         xml += ' version="' + opts.webxml_webapp_version + '"';
-        xml += ' xmlns="' + opts.xmlns + '"';
+        xml += ' xmlns="' + opts.webxml_webapp_xmlns + '"';
         xml += ' xmlns:xsi="' + opts.webxml_webapp_xmlns_xsi + '"';
         xml += ' xsi:schemaLocation="' + opts.webxml_webapp_xsi_schema_location + '"';
         xml += '>\n';

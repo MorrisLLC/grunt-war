@@ -113,6 +113,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.2.1
+
+* Fixed deployment issue resulting from using wrong option when generating webapp tag.
+
 #### 0.2.0
 
 * Renamed `options.war_filename` to `options.war_name`.
