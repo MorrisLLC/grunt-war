@@ -33,6 +33,15 @@ module.exports = function (grunt) {
             webxml_webapp_extras: []
         });
 
+        try {
+            if (fs.existsSync(warName(options))) {
+                fs.renameSync(warName(options ),warName(options) + '.old');
+                fs.unlinkSync(warName(options) + '.old');
+            }
+        } catch (err) {
+            grunt.log.error('Unable remove old ' + warName(options) + '  ' + err);
+        }
+
         war(zip, options, [
             {filename: 'WEB-INF/web.xml', data: webXML},
             {filename: 'META-INF'}
@@ -56,6 +65,7 @@ module.exports = function (grunt) {
                 throw err;
             }
         });
+
 
         try {
             log(options, 'Generating ' + warName(options));
