@@ -91,10 +91,6 @@ Default value: `'index.html'`
 Type: `'string'`
 Default value: `'Grunt WAR'`
 
-#### options.webxml_webapp_extras
-Type: `'Array'`
-Default value: `[]`
-
 #### options.webxml_mime_mapping
 Type: `'Array'`
 Default value: `[]`
@@ -112,6 +108,10 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.2.3
+
+* Fixed file names being trimmed when included in war. Thanks @augier!
 
 #### 0.2.1
 

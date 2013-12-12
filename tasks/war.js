@@ -40,14 +40,14 @@ module.exports = function (grunt) {
 
         war(zip, options, options.war_extras);
 
-        var build_folder_length = normalize(options.war_dist_folder).length;
-
         this.files.forEach(function (each) {
             try {
                 var file_name = each.src[0];
                 if (!grunt.file.isDir(file_name)) {
+                    var src_folder_length = 1 + Math.max(indexOfRegEx(file_name,(/\//)),indexOfRegEx(file_name,(/\\/)));
+
                     war(zip, options, {
-                        filename: (file_name).substring(build_folder_length),
+                        filename: (file_name).substring(src_folder_length),
                         data: fs.readFileSync(file_name, 'binary')
                     });
                 }
@@ -157,5 +157,10 @@ module.exports = function (grunt) {
         } else {
             grunt.log.debug(msg);
         }
+    };
+
+    var indexOfRegEx = function(str, regex) {
+        var indexOf = str.search(regex);
+        return (indexOf >= 0) ? (indexOf + (0)) : indexOf;
     };
 };
