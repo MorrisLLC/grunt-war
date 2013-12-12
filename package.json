@@ -1,7 +1,7 @@
 {
   "name": "grunt-war",
   "description": "Pure JS implementation for generating a WAR file.",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "homepage": "https://github.com/MorrisLLC/grunt-war",
   "author": {
     "name": "Robert Morris",
@@ -31,13 +31,17 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.2"
+    "grunt": ">= 0.4.2",
+    "node-zip": ">= 1.0.1 < 2"
+  },
+  "dependencies": {
+    "node-zip": ">= 1.0.1"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2",
-    "node-zip": "~1.0.1"
+    "grunt": ">= 0.4.2",
+    "node-zip": ">= 1.0.1"
   },
   "keywords": [
-    "gruntplugin", "maven", "war", "maven-war-plugin"
+    "gruntplugin", "maven", "war", "maven-war-plugin", "zip", "node-zip"
   ]
 }

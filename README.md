@@ -109,13 +109,17 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.2.5
+
+* Updated peerDependencies to include node-zip. (@augier)
+
 #### 0.2.4
 
 * Now deletes `options.war_name` from `options.war_dist_folder` before trying to generate a new `war` file.
 
 #### 0.2.3
 
-* Fixed file names being trimmed when included in war. Thanks @augier!
+* Fixed file names being trimmed when included in war. (@augier)
 
 #### 0.2.1
 
