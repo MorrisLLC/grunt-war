@@ -109,6 +109,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.2.6
+
+* Fixed grunt-war encoding text incorrectly. Example: 'Količina' and 'Osveži' would get encoded as 'KoliÄina' and 'OsveÅ¾i'. (sobrle)
+
 #### 0.2.5
 
 * Updated peerDependencies to include node-zip. (@augier)
