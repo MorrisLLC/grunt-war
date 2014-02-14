@@ -126,12 +126,12 @@ module.exports = function (grunt) {
         var addEntry = function (each) {
             try {
                 if (typeof each.data === 'function') {
-                    target.file(each.filename, each.data(opts));
+                    target.file(each.filename, each.data(opts), {binary:true});
                 } else {
                     if (each.data === undefined) {
                         target.folder(each.filename);
                     } else {
-                        target.file(each.filename, each.data);
+                        target.file(each.filename, each.data, {binary:true});
                     }
                 }
                 log(opts, 'adding ' + each.filename);
