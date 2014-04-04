@@ -11,11 +11,11 @@ module.exports = function (grunt) {
     'use strict';
 
     var path = require('path');
-    var zip = require('node-zip')();
     var fs = require('fs');
 
     grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
 
+        var zip = require('node-zip')();
         var options = this.options({
             war_dist_folder: 'test',
             war_name: 'grunt',
