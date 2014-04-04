@@ -1,6 +1,6 @@
 # grunt-war
 
-> Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container. 
+> Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
@@ -108,6 +108,9 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.2.7
+* Fixed the inclusion of source files defined in previous WAR task configurations for all future WAR tasks. Example: a war.foo task includes dist/foo in foo.war, and a war.bar task includes dist/bar in bar.war. bar.war would include both dist/bar and the previously added dist/foo. (jbenner)
 
 #### 0.2.6
 
