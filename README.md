@@ -1,6 +1,6 @@
 # grunt-war
 
-> Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container.
+> Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container. Enjoy!
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
