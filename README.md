@@ -113,7 +113,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 ## Release History
 
 #### 0.3.0 (Breaking changes)
-* This release allows for more flexible output paths inside the war bundle using Grunt's built-in dest write instead of the prior custom and less flexible rewrites. If you want the same behavior as in prior releases that did not depend on the 'dest' configuration then you must modify the task to something similiar to the following:
+* This release allows for more flexible output paths inside the war bundle using Grunt's built-in dest write instead of the prior custom and less flexible rewrites. If you want the same behavior as in prior releases that did not depend on the 'dest' configuration then you must modify the task to something similiar to the following snippet.  (shcarrico)
 
 ````js
     ...
