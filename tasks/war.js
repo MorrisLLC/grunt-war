@@ -55,6 +55,8 @@ module.exports = function (grunt) {
                 if (!grunt.file.isDir(file_name)) {
                     var src_folder_length = 1 + Math.max(indexOfRegEx(file_name,(/\//)),indexOfRegEx(file_name,(/\\/)));
 
+                    grunt.log.writeln('old: ' + (file_name).substring(src_folder_length) + '  new: ' + each.dest);
+
                     war(zip, options, {
                         filename: (file_name).substring(src_folder_length),
                         data: fs.readFileSync(file_name, 'binary')
