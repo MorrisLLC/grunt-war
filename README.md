@@ -21,6 +21,8 @@ grunt.loadNpmTasks('grunt-war');
 In your project's Gruntfile, add a section named `war` to the data object passed into `grunt.initConfig()`.
 
 ```js
+grunt.loadNpmTasks('grunt-war');
+
 grunt.initConfig({
 
       /*
@@ -32,17 +34,16 @@ grunt.initConfig({
             war_dist_folder: '<%= build_dir %>',
             war_verbose: true,
             war_name: 'webmagic',
-            war_extras: [{filename: 'grunt-war-credits.txt', data: 'Thank you @wibobm!\n'}],
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
-            webxml_mime_mapping: [
-                { extension: 'woff', mime_type: 'application/font-woff' }
-              ]
+            webxml_mime_mapping: [ { extension: 'woff', mime_type: 'application/font-woff' } ]
           },
           files: [
             {
               expand: true,
-              src: ['<%= build_dir %>/**']
+              cwd: '<%= build_dir %>'
+              src: ['**'],
+              dest: ''
             }
           ]
         }
@@ -103,11 +104,35 @@ Default value: `[]`
 
 An array of objects that are either `'string'` or `'function'` that return `'string'`.  These entries are
 included directly into the generated web.xml.
+    
+    war_extras: [ {filename: 'grunt-war-credits.txt', data: 'This line will appear in the file!\n'} ]
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.3.0 (Breaking changes)
+* This release allows for more flexible outpaths inside the war bundle using Grunt's built-in dest write instead of the prior custom re-rewrites.  If you want the same behavior as in prior releases because your not using a 'dest' configuration modify your 'files' to something similiar to the following:
+
+````js
+    var taskConfig = {
+    ...
+    war: {
+      target: {
+        options: { ... },
+        files: [
+            {
+              expand: true,
+              cwd: '<%= build_dir %>',
+              src: ['**'],
+              dest: ''
+            }
+        ]
+      }
+    },
+    ....
+````
 
 #### 0.2.7
 * Fixed the inclusion of source files defined in previous WAR task configurations for all future WAR tasks. Example: a war.foo task includes dist/foo in foo.war, and a war.bar task includes dist/bar in bar.war. bar.war would include both dist/bar and the previously added dist/foo. (jbenner)
