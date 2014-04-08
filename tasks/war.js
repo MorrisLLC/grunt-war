@@ -2,7 +2,7 @@
  * grunt-war
  * https://github.com/wibobm/grunt-war
  *
- * Copyright (c) 2013 Morriscoding LLC
+ * Copyright (c) 2014 Morriscoding LLC
  * Licensed under the MIT license.
  */
 
@@ -53,9 +53,6 @@ module.exports = function (grunt) {
             try {
                 var file_name = each.src[0];
                 if (!grunt.file.isDir(file_name)) {
-
-                    grunt.log.writeln('old: ' + (file_name).substring(src_folder_length) + '  new: ' + each.dest);
-
                     war(zip, options, {
                         filename: each.dest,
                         data: fs.readFileSync(file_name, 'binary')
