@@ -43,7 +43,7 @@ module.exports = function (grunt) {
         }
 
         war(zip, options, [
-            {filename: 'WEB-INF/web.xml', data: webXML},
+            {filename: 'WEB-INF/web.xml', data: options.webxml},
             {filename: 'META-INF'}
         ]);
 

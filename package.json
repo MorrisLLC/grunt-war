@@ -1,7 +1,7 @@
 {
   "name": "grunt-war",
   "description": "Pure JS implementation for generating a WAR file.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://github.com/MorrisLLC/grunt-war",
   "author": {
     "name": "Robert Morris",
