@@ -87,18 +87,21 @@ Compress ('DEFLATE') or leave uncompressed ('NONE').
 #### options.webxml
 Type: `'Function'`
 Default value: Normally omitted. Only provide if you want absolute control over the format and contents of the web.xml.
+If you specifify this option the other `options.webxml_XXX` will have no effect if specified.
+
+Example (a)
 
 ````js
-     /* Function coded to return a string that will become the complete contents of the web.xml */
+     /* Return a string that will become the complete contents of the web.xml */
      webxml: function (opts) { 
                 return 'string containing contents of web.xml'; 
              },
 ````
 
-OR
+Example(b)
 
 ````js
-     /* Function coded to return the contents of a file which will become the web.xml */
+     /* Return the contents of a file which will become the web.xml */
      webxml: function (opts) { 
                 var fs = require('fs'); 
                 return fs.readFileSync(pathToFileWithContentsOfHardCodedWebXML, 'binary'); 
