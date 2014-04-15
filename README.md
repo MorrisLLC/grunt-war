@@ -89,7 +89,7 @@ Type: `'Function'`
 Default value: Normally omitted. Only provide if you want absolute control over the format and contents of the web.xml.
 If you specifify this option the other `options.webxml_XXX` will have no effect if specified.
 
-Example (a)
+Example 1
 
 ````js
      /* Return a string that will become the complete contents of the web.xml */
@@ -98,7 +98,7 @@ Example (a)
              },
 ````
 
-Example(b)
+Example 2
 
 ````js
      /* Return the contents of a file which will become the web.xml */
