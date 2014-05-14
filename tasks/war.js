@@ -33,6 +33,16 @@ module.exports = function (grunt) {
             webxml_webapp_extras: []
         });
 
+        options.war_dist_folder = normalize(options.war_dist_folder)
+
+        try {
+            if(!fs.existsSync(options.war_dist_folder)) {
+                fs.mkdirSync(options.war_dist_folder);
+            }
+        } catch (err) {
+            grunt.log.error('Unable create directory ' + options.war_dist_folder + '  ' + err);
+        }
+
         try {
             if (fs.existsSync(warName(options))) {
                 fs.renameSync(warName(options ),warName(options) + '.old');
@@ -149,7 +159,7 @@ module.exports = function (grunt) {
     };
 
     var warName = function (opts) {
-        return normalize(opts.war_dist_folder) + opts.war_name + ((/\.war$/).test(opts.war_name) ? '' : '.war');
+        return opts.war_dist_folder + opts.war_name + ((/\.war$/).test(opts.war_name) ? '' : '.war');
     };
 
     var normalize = function (folder) {
