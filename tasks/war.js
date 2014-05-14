@@ -33,7 +33,7 @@ module.exports = function (grunt) {
             webxml_webapp_extras: []
         });
 
-        options.war_dist_folder = normalize(options.war_dist_folder)
+        options.war_dist_folder = normalize(options.war_dist_folder);
 
         try {
             if(!fs.existsSync(options.war_dist_folder)) {
