@@ -45,8 +45,8 @@ module.exports = function (grunt) {
 
         try {
             if (fs.existsSync(warName(options))) {
-                fs.renameSync(warName(options ),warName(options) + '.old');
-                fs.unlinkSync(warName(options) + '.old');
+               fs.renameSync(warName(options ),warName(options) + '.old');
+               fs.unlinkSync(warName(options) + '.old');
             }
         } catch (err) {
             grunt.log.error('Unable remove old ' + warName(options) + '  ' + err);
@@ -59,10 +59,12 @@ module.exports = function (grunt) {
 
         war(zip, options, options.war_extras);
 
+        var warFileName = warName(options);
+        
         this.files.forEach(function (each) {
             try {
                 var file_name = each.src[0];
-                if (!grunt.file.isDir(file_name)) {
+                if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) != 0) {
                     war(zip, options, {
                         filename: each.dest,
                         data: fs.readFileSync(file_name, 'binary')
@@ -78,7 +80,7 @@ module.exports = function (grunt) {
         try {
             log(options, 'Generating ' + warName(options));
             var data = zip.generate({type: 'nodebuffer', compression: options.war_compression});
-            fs.writeFileSync(warName(options), data, 'binary');
+            fs.writeFileSync(warName(options), data, { encoding: 'binary', mode: 438, flag: 'a' });
         } catch (err) {
             grunt.log.error('Error creating war: ' + err);
             throw err;
