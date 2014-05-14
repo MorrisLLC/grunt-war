@@ -15,6 +15,9 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-war');
 ```
 
+[Then sip on some @AnodyneCoffee.](https://anodynecoffee.com)
+Enjoy!
+
 ## The "war" task
 
 ### Overview
@@ -36,7 +39,11 @@ grunt.initConfig({
             war_name: 'webmagic',
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
-            webxml_mime_mapping: [ { extension: 'woff', mime_type: 'application/font-woff' } ]
+            webxml_mime_mapping: [ 
+		{ 
+			extension: 'woff', 
+		  	mime_type: 'application/font-woff' 
+		} ]
           },
           files: [
             {
@@ -135,6 +142,9 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.3.2
+* If the war_dest_folder does not already exist then grunt-war will create it.  This saves the pain of adding this check before calling grunt-war. (skray)
 
 #### 0.3.1 
 * Added `options.webxml` so that you may provide the raw contents of the web.xml when necessary. Requested by MartinDoyleUK.
