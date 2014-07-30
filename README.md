@@ -64,7 +64,7 @@ grunt.initConfig({
 Type: `'string'`
 Default value: `'test'`
 
-This is the folder that the war will be placed. This folder has to exist before this task is run.
+This is the folder that the war will be placed in. This folder has to exist before this task is run.
 
 #### options.war_name
 Type: `'string'`
@@ -94,7 +94,7 @@ Compress ('DEFLATE') or leave uncompressed ('NONE').
 #### options.webxml
 Type: `'Function'`
 Default value: Normally omitted. Only provide if you want absolute control over the format and contents of the web.xml.
-If you specifify this option the other `options.webxml_XXX` will have no effect if specified.
+If you specify this option the other `options.webxml_XXX` will have no effect if specified.
 
 Example 1
 
@@ -144,7 +144,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 ## Release History
 
 #### 0.3.2
-* If the war_dest_folder does not already exist then grunt-war will create it.  This saves the pain of adding this check before calling grunt-war. (skray)
+* If the war_dist_folder does not already exist then grunt-war will create it.  This saves the pain of adding this check before calling grunt-war. (skray)
 
 #### 0.3.1 
 * Added `options.webxml` so that you may provide the raw contents of the web.xml when necessary. Requested by MartinDoyleUK.
