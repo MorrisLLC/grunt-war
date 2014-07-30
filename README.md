@@ -143,6 +143,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.3.3
+* Removed a project dependency (not actively maintained) to try and address reports of a out-of-memory exception while generating a war file from 2 users.
+* Grammer corrections - Thank you Tim Russell (trussell314).
+
 #### 0.3.2
 * If the war_dist_folder does not already exist then grunt-war will create it.  This saves the pain of adding this check before calling grunt-war. (skray)
 
