@@ -15,7 +15,9 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
 
-        var zip = require('node-zip')();
+        var Zip = require('jszip');
+        var zip = new Zip();
+
         var options = this.options({
             war_dist_folder: 'test',
             war_name: 'grunt',
@@ -64,7 +66,7 @@ module.exports = function (grunt) {
         this.files.forEach(function (each) {
             try {
                 var file_name = each.src[0];
-                if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) != 0) {
+                if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
                     war(zip, options, {
                         filename: each.dest,
                         data: fs.readFileSync(file_name, 'binary')
