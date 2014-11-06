@@ -143,6 +143,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.3.4
+* If the project being processed provides a top level WEB-INF/web.xml then grunt-war will use it in lieu of generating one automatically and will ignore the webxml options configured on the grunt-war task. 
+
 #### 0.3.3
 * Removed a project dependency (not actively maintained) to try and address reports of a out-of-memory exception while generating a war file from 2 users.
 * Grammer corrections - Thank you Tim Russell (trussell314).

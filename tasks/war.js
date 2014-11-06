@@ -54,23 +54,35 @@ module.exports = function (grunt) {
             grunt.log.error('Unable remove old ' + warName(options) + '  ' + err);
         }
 
-        war(zip, options, [
-            {filename: 'WEB-INF/web.xml', data: options.webxml},
-            {filename: 'META-INF'}
-        ]);
+        // war(zip, options, [
+        //     {filename: 'WEB-INF/web.xml', data: options.webxml},
+        //     {filename: 'META-INF'}
+        // ]);
 
         war(zip, options, options.war_extras);
 
         var warFileName = warName(options);
-        
+        var webxmlExists = false;
+        var metaINFExists = false;
+
         this.files.forEach(function (each) {
             try {
                 var file_name = each.src[0];
+                
+              
                 if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
                     war(zip, options, {
                         filename: each.dest,
                         data: fs.readFileSync(file_name, 'binary')
                     });
+                    
+                    if (!webxmlExists && 'WEB-INF/web.xml'.localeCompare(each.dest) == 0) {
+                        webxmlExists = true;
+                        log('User supplied WEB-INF/web.xml therefore any webxml options on grunt-war task will be ignored.');
+                    }
+                    if (!metaINFExists && (/^META-INF/).test(each.dest)) {
+                        metaINFExists = true;
+                    }
                 }
             } catch (err) {
                 grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
@@ -78,6 +90,17 @@ module.exports = function (grunt) {
             }
         });
 
+        if (webxmlExists === false) {
+            war(zip, options, [
+                {filename: 'WEB-INF/web.xml', data: options.webxml}
+            ]);
+        }
+
+        if (metaINFExists === false) {
+            war(zip, options, [
+                {filename: 'META-INF'}
+            ]);
+        }
 
         try {
             log(options, 'Generating ' + warName(options));
