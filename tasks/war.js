@@ -74,38 +74,17 @@ module.exports = function (grunt) {
 
         archive.pipe(output);
 
-        var webxmlExists = false;
-        var metaINFExists = false;
-
         war(archive, options, options.war_extras);
-
-        this.files.forEach(function (each) {
-            try {
-                var file_name = each.src[0];
-                if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
-                    if (!webxmlExists && 'WEB-INF/web.xml'.localeCompare(each.dest) == 0) {
-                        webxmlExists = true;
-                        log('User supplied WEB-INF/web.xml therefore any webxml options on grunt-war task will be ignored.');
-                    }
-                    if (!metaINFExists && (/^META-INF/).test(each.dest)) {
-                        metaINFExists = true;
-                    }
-                }
-            } catch (err) {
-                grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
-                throw err;
-            }
-        });
 
         archive.bulk(this.files);
 
-        if (webxmlExists === false) {
+        if (!containsWebXML(this.files)) {
             war(archive, options, [
                 {filename: 'WEB-INF/web.xml', data: options.webxml}
             ]);
         }
 
-        if (metaINFExists === false) {
+        if (!containsMetaINF(this.files)) {
             war(archive, options, [
                 {filename: 'META-INF'}
             ]);
@@ -213,5 +192,20 @@ module.exports = function (grunt) {
 
     var compression = function(opts) {
         return (/^NONE/).test(opts.war_compression);
-    }
+    };
+
+    var containsWebXML = function (files) {
+        var testWebXML = 'WEB-INF' + path.sep + 'web.xml';
+        return files.some(function (each) {
+                return !grunt.file.isDir(each.src[0]) && testWebXML.localeCompare(each.dest) == 0;
+            }
+        );
+    };
+
+    var containsMetaINF = function (files) {
+        return files.some(function (each) {
+                return (/^META-INF/).test(each.dest);
+            }
+        );
+    };
 };

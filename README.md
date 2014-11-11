@@ -23,6 +23,37 @@ Enjoy!
 ### Overview
 In your project's Gruntfile, add a section named `war` to the data object passed into `grunt.initConfig()`.
 
+The simplest usage might look simiiar to the following:
+
+```js
+grunt.loadNpmTasks('grunt-war');
+
+grunt.initConfig({
+
+      /*
+       * Build a WAR (web archive) without Maven or the JVM installed.
+       */
+      war: {
+        target: {
+          options: {
+            war_dist_folder: '<%= build_dir %>',    /* Folder where to generate the WAR. */
+            war_name: 'webmagic'                    /* The name fo the WAR file (.war will be the extension) */
+          },
+          files: [
+            {
+              expand: true,
+              cwd: '<%= build_dir %>',
+              src: ['**'],
+              dest: ''
+            }
+          ]
+        }
+      }
+});
+```
+
+If your project does not include a web.xml then grunt-war can generate one for you.  This is one option below:
+
 ```js
 grunt.loadNpmTasks('grunt-war');
 
@@ -35,15 +66,14 @@ grunt.initConfig({
         target: {
           options: {
             war_dist_folder: '<%= build_dir %>',
-            war_verbose: true,
             war_name: 'webmagic',
             webxml_welcome: 'index.html',
             webxml_display_name: 'Web Magic',
             webxml_mime_mapping: [ 
-		{ 
-			extension: 'woff', 
-		  	mime_type: 'application/font-woff' 
-		} ]
+    { 
+      extension: 'woff', 
+        mime_type: 'application/font-woff' 
+    } ]
           },
           files: [
             {
@@ -142,6 +172,9 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.4.1
+* Documenation update.
 
 #### 0.4.0
 * This build uses streams to build the WAR and can process vastly larger projects (huge) than in prior versions. This should fix the "Out of memory error - FATAL ERROR". that has been reported by a few individuals. 
