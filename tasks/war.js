@@ -16,7 +16,8 @@ module.exports = function (grunt) {
 
         var archiver = require('archiver');
         var fs = require('fs');
-
+        var done = this.async();
+        
         var options = this.options({
             war_dist_folder: 'test',
             war_name: 'grunt',
@@ -35,6 +36,7 @@ module.exports = function (grunt) {
         });
 
         options.war_dist_folder = normalize(options.war_dist_folder);
+        var warFileName = warName(options);
 
         try {
             if (!fs.existsSync(options.war_dist_folder)) {
@@ -45,26 +47,20 @@ module.exports = function (grunt) {
         }
 
         try {
-            if (fs.existsSync(warName(options))) {
-                fs.renameSync(warName(options), warName(options) + '.old');
-                fs.unlinkSync(warName(options) + '.old');
+            if (fs.existsSync(warFileName)) {
+                fs.renameSync(wwarFileName, warFileName + '.old');
+                fs.unlinkSync(warFileName + '.old');
             }
         } catch (err) {
-            grunt.log.error('Unable remove old ' + warName(options) + '  ' + err);
+            grunt.log.error('Unable remove old ' + warFileName + '  ' + err);
         }
 
-        var warFileName = warName(options);
+       
         var output = fs.createWriteStream(warFileName);
-
-        var archive = archiver('zip', {
-            store: true
-        });
-
-        var done = this.async();
-
+        var archive = archiver('zip', { store: compression(options) } );
 
         output.on('close', function () {
-            log(options, 'grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
+            grunt.log.writeln('grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
         });
 
         output.on('finish', function () {
@@ -214,4 +210,8 @@ module.exports = function (grunt) {
         var indexOf = str.search(regex);
         return (indexOf >= 0) ? (indexOf + (0)) : indexOf;
     };
+
+    var compression = function(opts) {
+        return (/^NONE/).test(opts.war_compression);
+    }
 };
