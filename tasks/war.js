@@ -11,12 +11,11 @@ module.exports = function (grunt) {
     'use strict';
 
     var path = require('path');
-    var fs = require('fs');
 
     grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
 
-        var Zip = require('jszip');
-        var zip = new Zip();
+        var archiver = require('archiver');
+        var fs = require('fs');
 
         var options = this.options({
             war_dist_folder: 'test',
@@ -38,7 +37,7 @@ module.exports = function (grunt) {
         options.war_dist_folder = normalize(options.war_dist_folder);
 
         try {
-            if(!fs.existsSync(options.war_dist_folder)) {
+            if (!fs.existsSync(options.war_dist_folder)) {
                 fs.mkdirSync(options.war_dist_folder);
             }
         } catch (err) {
@@ -47,35 +46,47 @@ module.exports = function (grunt) {
 
         try {
             if (fs.existsSync(warName(options))) {
-               fs.renameSync(warName(options ),warName(options) + '.old');
-               fs.unlinkSync(warName(options) + '.old');
+                fs.renameSync(warName(options), warName(options) + '.old');
+                fs.unlinkSync(warName(options) + '.old');
             }
         } catch (err) {
             grunt.log.error('Unable remove old ' + warName(options) + '  ' + err);
         }
 
-        // war(zip, options, [
-        //     {filename: 'WEB-INF/web.xml', data: options.webxml},
-        //     {filename: 'META-INF'}
-        // ]);
-
-        war(zip, options, options.war_extras);
-
         var warFileName = warName(options);
+        var output = fs.createWriteStream(warFileName);
+
+        var archive = archiver('zip', {
+            store: true
+        });
+
+        var done = this.async();
+
+
+        output.on('close', function () {
+            log(options, 'grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
+        });
+
+        output.on('finish', function () {
+            done(true);
+        })
+
+        archive.on('error', function (err) {
+            done(true);
+            throw err;
+        });
+
+        archive.pipe(output);
+
         var webxmlExists = false;
         var metaINFExists = false;
+
+        war(archive, options, options.war_extras);
 
         this.files.forEach(function (each) {
             try {
                 var file_name = each.src[0];
-                
-              
                 if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
-                    war(zip, options, {
-                        filename: each.dest,
-                        data: fs.readFileSync(file_name, 'binary')
-                    });
-                    
                     if (!webxmlExists && 'WEB-INF/web.xml'.localeCompare(each.dest) == 0) {
                         webxmlExists = true;
                         log('User supplied WEB-INF/web.xml therefore any webxml options on grunt-war task will be ignored.');
@@ -90,26 +101,21 @@ module.exports = function (grunt) {
             }
         });
 
+        archive.bulk(this.files);
+
         if (webxmlExists === false) {
-            war(zip, options, [
+            war(archive, options, [
                 {filename: 'WEB-INF/web.xml', data: options.webxml}
             ]);
         }
 
         if (metaINFExists === false) {
-            war(zip, options, [
+            war(archive, options, [
                 {filename: 'META-INF'}
             ]);
         }
 
-        try {
-            log(options, 'Generating ' + warName(options));
-            var data = zip.generate({type: 'nodebuffer', compression: options.war_compression});
-            fs.writeFileSync(warName(options), data, { encoding: 'binary', mode: 438, flag: 'a' });
-        } catch (err) {
-            grunt.log.error('Error creating war: ' + err);
-            throw err;
-        }
+        archive.finalize();
     });
 
     var webXML = function (opts) {
@@ -161,15 +167,15 @@ module.exports = function (grunt) {
         var addEntry = function (each) {
             try {
                 if (typeof each.data === 'function') {
-                    target.file(each.filename, each.data(opts), {binary:true});
+                    target.append(each.data(opts), {name: each.filename});
                 } else {
                     if (each.data === undefined) {
-                        target.folder(each.filename);
+                        target.append(null, {name: normalize(each.filename)});
                     } else {
-                        target.file(each.filename, each.data, {binary:true});
+                        target.append(each.data, {name: each.filename});
                     }
                 }
-                log(opts, 'adding ' + each.filename);
+                //log(opts, 'adding ' + each.filename);
             } catch (err) {
                 grunt.log.error('Error adding: ' + each + ' to war: ' + err);
                 throw err;
@@ -204,7 +210,7 @@ module.exports = function (grunt) {
         }
     };
 
-    var indexOfRegEx = function(str, regex) {
+    var indexOfRegEx = function (str, regex) {
         var indexOf = str.search(regex);
         return (indexOf >= 0) ? (indexOf + (0)) : indexOf;
     };

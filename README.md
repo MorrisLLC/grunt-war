@@ -143,6 +143,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.4.0
+* This build uses streams to build the WAR and can process vastly larger projects (huge) than in prior versions. This should fix the "Out of memory error - FATAL ERROR". that has been reported by a few individuals. 
+
 #### 0.3.4
 * If the project being processed provides a top level WEB-INF/web.xml then grunt-war will use it in lieu of generating one automatically and will ignore the webxml options configured on the grunt-war task. 
 
