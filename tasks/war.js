@@ -55,10 +55,9 @@ module.exports = function (grunt) {
             grunt.log.error('Unable remove old ' + warFileName + '  ' + err);
         }
 
-       
         var output = fs.createWriteStream(warFileName);
         var archive = archiver('zip', { store: compression(options) } );
-
+        
         output.on('close', function () {
             grunt.log.writeln('grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
         });
@@ -76,18 +75,33 @@ module.exports = function (grunt) {
 
         war(archive, options, options.war_extras);
 
-        archive.bulk(this.files);
+        //archive.bulk(this.files);
+        this.files.forEach(function (each) {
+                try {
+                    var file_name = each.src[0];
+                    if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
+                        war(archive, options, {
+                            filename: '' + each.dest,
+                            data: fs.createReadStream(file_name) //file_name //fs.readFileSync(file_name, 'binary')
+                        });
+                    }
+                } catch (err) {
+                    grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
+                    throw err;
+                }
+            });
+
 
         if (!containsWebXML(this.files)) {
-            war(archive, options, [
+            war(archive, options, 
                 {filename: 'WEB-INF/web.xml', data: options.webxml}
-            ]);
+            );
         }
 
         if (!containsMetaINF(this.files)) {
-            war(archive, options, [
+            war(archive, options, 
                 {filename: 'META-INF'}
-            ]);
+            );
         }
 
         archive.finalize();
@@ -147,10 +161,9 @@ module.exports = function (grunt) {
                     if (each.data === undefined) {
                         target.append(null, {name: normalize(each.filename)});
                     } else {
-                        target.append(each.data, {name: each.filename});
+                        target.append(each.data, {name: '' + each.filename});
                     }
                 }
-                //log(opts, 'adding ' + each.filename);
             } catch (err) {
                 grunt.log.error('Error adding: ' + each + ' to war: ' + err);
                 throw err;
