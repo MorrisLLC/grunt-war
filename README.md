@@ -173,6 +173,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.4.3
+* Update to package.json for grunt-war. 
+
 #### 0.4.2
 * Fixed bad archive entry names. (mmaday)
 
