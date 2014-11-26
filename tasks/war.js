@@ -48,7 +48,7 @@ module.exports = function (grunt) {
 
         try {
             if (fs.existsSync(warFileName)) {
-                fs.renameSync(wwarFileName, warFileName + '.old');
+                fs.renameSync(warFileName, warFileName + '.old');
                 fs.unlinkSync(warFileName + '.old');
             }
         } catch (err) {

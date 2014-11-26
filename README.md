@@ -173,6 +173,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.4.4
+* Bug fix that prevented old wars from being deleted
+
 #### 0.4.3
 * Update to package.json for grunt-war. 
 
