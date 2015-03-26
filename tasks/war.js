@@ -208,7 +208,7 @@ module.exports = function (grunt) {
     };
 
     var containsWebXML = function (files) {
-        var testWebXML = 'WEB-INF' + path.sep + 'web.xml';
+        var testWebXML = 'WEB-INF/web.xml';
         return files.some(function (each) {
                 return !grunt.file.isDir(each.src[0]) && testWebXML.localeCompare(each.dest) == 0;
             }
