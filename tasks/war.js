@@ -82,7 +82,8 @@ module.exports = function (grunt) {
                     if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
                         war(archive, options, {
                             filename: '' + each.dest,
-                            data: fs.createReadStream(file_name) //file_name //fs.readFileSync(file_name, 'binary')
+			    src: file_name // new line
+                            //data: fs.createReadStream(file_name)
                         });
                     }
                 } catch (err) {
@@ -158,10 +159,10 @@ module.exports = function (grunt) {
                 if (typeof each.data === 'function') {
                     target.append(each.data(opts), {name: each.filename});
                 } else {
-                    if (each.data === undefined) {
+                    if (each.data === undefined && each.src === undefined) {
                         target.append(null, {name: normalize(each.filename)});
                     } else {
-                        target.append(each.data, {name: '' + each.filename});
+                        target.file(each.src, {name: '' + each.filename});
                     }
                 }
             } catch (err) {
