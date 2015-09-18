@@ -16,6 +16,9 @@ grunt.loadNpmTasks('grunt-war');
 ```
 
 [Then sip on some @AnodyneCoffee.](https://anodynecoffee.com)
+[Are you on Strava?](https://www.strava.com/athletes/7832063)
+[Do you enjoy YouTube?](http://www.youtube.com/c/BobMorrisWI)
+
 Enjoy!
 
 ## The "war" task
@@ -172,6 +175,9 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.4.7
+* Fixed issue with "extras" that was not consistent with EMFILE fix.  Thanks to laszlogmenyhart.
 
 #### 0.4.6
 * Fixed EMFILE exception (no many open files).

@@ -81,8 +81,7 @@ module.exports = function (grunt) {
                     if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
                         war(archive, options, {
                             filename: '' + each.dest,
-			    src: file_name // new line
-                            //data: fs.createReadStream(file_name)
+			                src: file_name 
                         });
                     }
                 } catch (err) {
@@ -156,11 +155,13 @@ module.exports = function (grunt) {
         var addEntry = function (each) {
             try {
                 if (typeof each.data === 'function') {
-                    target.append(each.data(opts), {name: each.filename});
-                } else if (each.data === undefined && each.src === undefined) {
-                        target.append(null, {name: normalize(each.filename)});
+                    target.append(each.data(opts), {name: normalize(each.filename)});
+                } else if (each.src !== undefined) {
+                    target.file(each.src, {name: '' + normalize(each.filename)});
+                } else if (each.data !== undefined) {
+                    target.append(each.data, {name: normalize(each.filename)});
                 } else {
-                        target.file(each.src, {name: '' + each.filename});
+                    target.append(null, {name: normalize(each.filename)});
                 }
             } catch (err) {
                 grunt.log.error('Error adding: ' + each + ' to war: ' + err);
