@@ -16,7 +16,9 @@ grunt.loadNpmTasks('grunt-war');
 ```
 
 [Then sip on some @AnodyneCoffee.](https://anodynecoffee.com)
+
 [Are you on Strava?](https://www.strava.com/athletes/7832063)
+
 [Do you enjoy YouTube?](http://www.youtube.com/c/BobMorrisWI)
 
 Enjoy!
