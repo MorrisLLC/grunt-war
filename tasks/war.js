@@ -75,7 +75,6 @@ module.exports = function (grunt) {
 
         war(archive, options, options.war_extras);
 
-        //archive.bulk(this.files);
         this.files.forEach(function (each) {
                 try {
                     var file_name = each.src[0];
@@ -158,12 +157,10 @@ module.exports = function (grunt) {
             try {
                 if (typeof each.data === 'function') {
                     target.append(each.data(opts), {name: each.filename});
-                } else {
-                    if (each.data === undefined && each.src === undefined) {
+                } else if (each.data === undefined && each.src === undefined) {
                         target.append(null, {name: normalize(each.filename)});
-                    } else {
+                } else {
                         target.file(each.src, {name: '' + each.filename});
-                    }
                 }
             } catch (err) {
                 grunt.log.error('Error adding: ' + each + ' to war: ' + err);

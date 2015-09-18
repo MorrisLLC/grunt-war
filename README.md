@@ -173,6 +173,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.4.6
+* Fixed EMFILE exception (no many open files).
+
 #### 0.4.5
 * Fixed a second WEB-INF/web.xml being added on windows.
 
