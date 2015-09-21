@@ -155,11 +155,11 @@ module.exports = function (grunt) {
         var addEntry = function (each) {
             try {
                 if (typeof each.data === 'function') {
-                    target.append(each.data(opts), {name: normalize(each.filename)});
+                    target.append(each.data(opts), {name: each.filename});
                 } else if (each.src !== undefined) {
-                    target.file(each.src, {name: '' + normalize(each.filename)});
+                    target.file(each.src, {name: '' + each.filename});
                 } else if (each.data !== undefined) {
-                    target.append(each.data, {name: normalize(each.filename)});
+                    target.append(each.data, {name: each.filename});
                 } else {
                     target.append(null, {name: normalize(each.filename)});
                 }
