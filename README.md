@@ -178,6 +178,9 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.4.8
+* Fixed issue with "normalize" creating folders.  Thanks to rbalmf and laszlogmenyhart.
+
 #### 0.4.7
 * Fixed issue with "extras" that was not consistent with EMFILE fix.  Thanks to laszlogmenyhart.
 
