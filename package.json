@@ -7,6 +7,7 @@
     "name": "Robert Morris",
     "email": "wibobm@gmail.com"
   },
+  "license": "MIT",
   "engines": {
     "node": ">= 0.10.0"
   },
