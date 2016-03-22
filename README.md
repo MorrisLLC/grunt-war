@@ -178,6 +178,12 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+#### 0.5.0
+* Fixed issue when using NPM3 that grunt-war dependencies had to be manually installed. Thanks to @bradrox
+
+#### 0.4.9
+* Just a version bump of dependencies used internally. 
+
 #### 0.4.8
 * Fixed issue with "normalize" creating folders.  Thanks to rbalmf and laszlogmenyhart.
 
