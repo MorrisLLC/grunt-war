@@ -37,6 +37,9 @@
   "scripts": {
     "test": "grunt test"
   },
+  "dependencies": {
+    "archiver": ">= 0.12.0"
+  },
   "peerDependencies": {
     "archiver": ">= 0.12.0"
   },
