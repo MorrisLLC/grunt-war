@@ -71,14 +71,10 @@ grunt.initConfig({
         target: {
           options: {
             war_dist_folder: '<%= build_dir %>',
-            war_name: 'webmagic',
+            war_name: 'grunt-magic',
             webxml_welcome: 'index.html',
-            webxml_display_name: 'Web Magic',
-            webxml_mime_mapping: [ 
-    { 
-      extension: 'woff', 
-        mime_type: 'application/font-woff' 
-    } ]
+            webxml_display_name: 'Grunt WAR',
+            webxml_mime_mapping: [ { extension: 'woff', mime_type: 'application/font-woff' } ]
           },
           files: [
             {
@@ -91,6 +87,44 @@ grunt.initConfig({
         }
       }
 });
+```
+
+A complete and very simple Grunt file example will look like the following.
+
+```js
+// Save this snippet as grunt-war.js and run with  "grunt --gruntfile grunt-war.js war" at the command line.
+// Assumes simple layout:
+// -project
+// --build  (The folder where the generated grunt-magic.war file will go)
+// --src    (all the source code, html, etc)
+// --- index.html (The file name must match up with the webxml_welcome: property below)
+module.exports = function ( grunt ) {
+    grunt.loadNpmTasks( 'grunt-war' );
+
+    var taskConfig = {
+        war: {
+            target: {
+                options: {
+                    war_verbose: true,
+                    war_dist_folder: 'build',           // Folder path seperator added at runtime.
+                    war_name: 'grunt-magic',            // .war will be appended if omitted
+                    webxml_welcome: 'index.html',
+                    webxml_display_name: 'Grunt WAR'
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'src',
+                        src: ['**'],
+                        dest: ''
+                    }
+                ]
+            }
+        }
+    };
+
+    grunt.initConfig( taskConfig );
+};
 ```
 
 ### Options
@@ -173,13 +207,19 @@ Default value: `[]`
 An array of objects that are either `'string'` or `'function'` that return `'string'`.  These entries are
 included directly into the generated web.xml.
     
-    webxml_webapp_extras: [ '<login-config />\n', '<session-config>\n    <session-timeout>\n    30\n    </session-timeout>\n</session-config>\n' ]
+    webxml_webapp_extras: [
+        '<login-config />\n',
+        '<session-config>\n<session-timeout>\n30\n</session-timeout>\n</session-config>\n'
+    ]
 
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.5.1
+* Sample webxml_webapp_extras. Thanks to @pthaden
 
 #### 0.5.0
 * Fixed issue when using NPM3 that grunt-war dependencies had to be manually installed. Thanks to @bradrox
