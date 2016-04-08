@@ -114,6 +114,8 @@ keys `filename` and `data` example: `{ filename: 'name_of_file.ext', data: file_
 is omitted then an empty folder called `filename` will be added to the WAR. The value of key  `data` can
 either be a `string` or a function that returns a `string`.
 
+    war_extras: [ {filename: 'grunt-war-credits.txt', data: 'This line will appear in the file!\n'} ]
+
 #### options.war_verbose
 Type: `'boolean'`
 Default value: `false`
@@ -171,7 +173,8 @@ Default value: `[]`
 An array of objects that are either `'string'` or `'function'` that return `'string'`.  These entries are
 included directly into the generated web.xml.
     
-    war_extras: [ {filename: 'grunt-war-credits.txt', data: 'This line will appear in the file!\n'} ]
+    webxml_webapp_extras: [ '<login-config />\n', '<session-config>\n    <session-timeout>\n    30\n    </session-timeout>\n</session-config>\n' ]
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
