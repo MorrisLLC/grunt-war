@@ -1,6 +1,6 @@
 /*
  * grunt-war
- * https://github.com/wibobm/grunt-war
+ * https://github.com/MorrisLLC/grunt-war
  *
  * Copyright (c) 2014 Morriscoding LLC
  * Licensed under the MIT license.
@@ -12,99 +12,49 @@ module.exports = function (grunt) {
 
     var path = require('path');
 
-    grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
+    var normalize = function (folder) {
+        if ((/\/$/).test(folder) || (/\\$/).test(folder)) {
+            return folder.substr(0, folder.length - 1) + path.sep;
+        }
+        return folder + path.sep;
+    };
 
+    var log = function (opts, msg) {
+        if (opts.war_verbose) {
+            grunt.log.writeln(msg);
+        } else {
+            grunt.log.debug(msg);
+        }
+    };
+
+    var compression = function(opts) {
+        return (/^NONE/).test(opts.war_compression);
+    };
+
+    var zipArchive = function (opts) {
         var archiver = require('archiver');
-        var fs = require('fs');
-        var done = this.async();
-        
-        var options = this.options({
-            war_dist_folder: 'test',
-            war_name: 'grunt',
-            war_compression: 'DEFLATE',
-            war_verbose: false,
-            war_extras: [],
-            webxml: webXML,
-            webxml_welcome: 'index.html',
-            webxml_display_name: 'Grunt WAR',
-            webxml_webapp_version: '3.0',
-            webxml_webapp_xmlns: 'http://java.sun.com/xml/ns/javaee',
-            webxml_webapp_xmlns_xsi: 'http://www.w3.org/2001/XMLSchema-instance',
-            webxml_webapp_xsi_schema_location: 'http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd',
-            webxml_mime_mapping: [],
-            webxml_webapp_extras: []
-        });
+        // archiver <= 7 exports a factory function; archiver 8+ (ESM) exports ZipArchive.
+        return typeof archiver === 'function' ? archiver('zip', opts) : new archiver.ZipArchive(opts);
+    };
 
-        options.war_dist_folder = normalize(options.war_dist_folder);
-        var warFileName = warName(options);
+    var warName = function (opts) {
+        return opts.war_dist_folder + opts.war_name + ((/\.war$/).test(opts.war_name) ? '' : '.war');
+    };
 
-        try {
-            if (!fs.existsSync(options.war_dist_folder)) {
-                fs.mkdirSync(options.war_dist_folder);
+    var containsWebXML = function (files) {
+        var testWebXML = 'WEB-INF/web.xml';
+        return files.some(function (each) {
+                return !grunt.file.isDir(each.src[0]) && testWebXML.localeCompare(each.dest) === 0;
             }
-        } catch (err) {
-            grunt.log.error('Unable create directory ' + options.war_dist_folder + '  ' + err);
-        }
+        );
+    };
 
-        try {
-            if (fs.existsSync(warFileName)) {
-                fs.renameSync(warFileName, warFileName + '.old');
-                fs.unlinkSync(warFileName + '.old');
+    var containsMetaINF = function (files) {
+        return files.some(function (each) {
+                return (/^META-INF/).test(each.dest);
             }
-        } catch (err) {
-            grunt.log.error('Unable remove old ' + warFileName + '  ' + err);
-        }
-
-        var output = fs.createWriteStream(warFileName);
-        var archive = archiver('zip', { store: compression(options) } );
-        
-        output.on('close', function () {
-            grunt.log.writeln('grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
-        });
-
-        output.on('finish', function () {
-            done(true);
-        })
-
-        archive.on('error', function (err) {
-            done(true);
-            throw err;
-        });
-
-        archive.pipe(output);
-
-        war(archive, options, options.war_extras);
-
-        this.files.forEach(function (each) {
-                try {
-                    var file_name = each.src[0];
-                    if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
-                        war(archive, options, {
-                            filename: '' + each.dest,
-			                src: file_name 
-                        });
-                    }
-                } catch (err) {
-                    grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
-                    throw err;
-                }
-            });
-
-
-        if (!containsWebXML(this.files)) {
-            war(archive, options, 
-                {filename: 'WEB-INF/web.xml', data: options.webxml}
-            );
-        }
-
-        if (!containsMetaINF(this.files)) {
-            war(archive, options, 
-                {filename: 'META-INF'}
-            );
-        }
-
-        archive.finalize();
-    });
+        );
+    };
 
     var webXML = function (opts) {
         var xml;
@@ -154,6 +104,7 @@ module.exports = function (grunt) {
 
         var addEntry = function (each) {
             try {
+                log(opts, 'grunt-war: adding ' + each.filename);
                 if (typeof each.data === 'function') {
                     target.append(each.data(opts), {name: each.filename});
                 } else if (each.src !== undefined) {
@@ -178,46 +129,104 @@ module.exports = function (grunt) {
         }
     };
 
-    var warName = function (opts) {
-        return opts.war_dist_folder + opts.war_name + ((/\.war$/).test(opts.war_name) ? '' : '.war');
-    };
+    grunt.registerMultiTask('war', 'grunt-war generating war.', function () {
 
-    var normalize = function (folder) {
-        if ((/\/$/).test(folder) || (/\\$/).test(folder)) {
-            return folder.substr(0, folder.length - 1) + path.sep;
-        }
-        return folder + path.sep;
-    };
+        var fs = require('fs');
+        var done = this.async();
 
-    var log = function (opts, msg) {
-        if (opts.war_verbose) {
-            grunt.log.writeln(msg);
-        } else {
-            grunt.log.debug(msg);
-        }
-    };
+        var options = this.options({
+            war_dist_folder: 'test',
+            war_name: 'grunt',
+            war_compression: 'DEFLATE',
+            war_verbose: false,
+            war_extras: [],
+            webxml: webXML,
+            webxml_welcome: 'index.html',
+            webxml_display_name: 'Grunt WAR',
+            webxml_webapp_version: '3.0',
+            webxml_webapp_xmlns: 'http://java.sun.com/xml/ns/javaee',
+            webxml_webapp_xmlns_xsi: 'http://www.w3.org/2001/XMLSchema-instance',
+            webxml_webapp_xsi_schema_location: 'http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd',
+            webxml_mime_mapping: [],
+            webxml_webapp_extras: []
+        });
 
-    var indexOfRegEx = function (str, regex) {
-        var indexOf = str.search(regex);
-        return (indexOf >= 0) ? (indexOf + (0)) : indexOf;
-    };
+        options.war_dist_folder = normalize(options.war_dist_folder);
+        var warFileName = warName(options);
 
-    var compression = function(opts) {
-        return (/^NONE/).test(opts.war_compression);
-    };
-
-    var containsWebXML = function (files) {
-        var testWebXML = 'WEB-INF/web.xml';
-        return files.some(function (each) {
-                return !grunt.file.isDir(each.src[0]) && testWebXML.localeCompare(each.dest) == 0;
+        try {
+            if (!fs.existsSync(options.war_dist_folder)) {
+                fs.mkdirSync(options.war_dist_folder, {recursive: true});
             }
-        );
-    };
+        } catch (err) {
+            grunt.log.error('Unable create directory ' + options.war_dist_folder + '  ' + err);
+        }
 
-    var containsMetaINF = function (files) {
-        return files.some(function (each) {
-                return (/^META-INF/).test(each.dest);
+        try {
+            if (fs.existsSync(warFileName)) {
+                fs.renameSync(warFileName, warFileName + '.old');
+                fs.unlinkSync(warFileName + '.old');
             }
-        );
-    };
+        } catch (err) {
+            grunt.log.error('Unable remove old ' + warFileName + '  ' + err);
+        }
+
+        var output = fs.createWriteStream(warFileName);
+        var archive = zipArchive({ store: compression(options) });
+
+        var finished = false;
+        var finish = function (success) {
+            if (!finished) {
+                finished = true;
+                done(success);
+            }
+        };
+
+        var fail = function (err) {
+            grunt.log.error('grunt-war: unable to create ' + warFileName + ': ' + err);
+            finish(false);
+        };
+
+        output.on('finish', function () {
+            grunt.log.writeln('grunt-war: (' + warFileName + ') ' + archive.pointer() + ' total bytes');
+            finish(true);
+        });
+
+        output.on('error', fail);
+        archive.on('error', fail);
+
+        archive.pipe(output);
+
+        war(archive, options, options.war_extras);
+
+        this.files.forEach(function (each) {
+                try {
+                    var file_name = each.src[0];
+                    if (!grunt.file.isDir(file_name) && file_name.localeCompare(warFileName) !== 0) {
+                        war(archive, options, {
+                            filename: '' + each.dest,
+			                src: file_name
+                        });
+                    }
+                } catch (err) {
+                    grunt.log.error('Unable to read file: (' + each.src + ') error: ' + err);
+                    throw err;
+                }
+            });
+
+
+        if (!containsWebXML(this.files)) {
+            war(archive, options,
+                {filename: 'WEB-INF/web.xml', data: options.webxml}
+            );
+        }
+
+        if (!containsMetaINF(this.files)) {
+            war(archive, options,
+                {filename: 'META-INF'}
+            );
+        }
+
+        archive.finalize();
+    });
 };

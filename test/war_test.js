@@ -61,8 +61,8 @@ exports.war = {
   },
 
   custom_options: function (test) {
-    test.ok(fs.existsSync('tmp/custom_options.war'), 'should not append a second .war extension.');
-    var war = readWar('tmp/custom_options.war');
+    test.ok(fs.existsSync('tmp/nested/custom_options.war'), 'should create nested dist folders and not append a second .war extension.');
+    var war = readWar('tmp/nested/custom_options.war');
 
     test.deepEqual(Object.keys(war).sort(), [
       'META-INF/',

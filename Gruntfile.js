@@ -1,6 +1,6 @@
 /*
  * grunt-war
- * https://github.com/wibobm/grunt-war
+ * https://github.com/MorrisLLC/grunt-war
  *
  * Copyright (c) 2013 rmorris
  * Licensed under the MIT license.
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
       },
       custom_options: {
         options: {
-          war_dist_folder: 'tmp/',
+          war_dist_folder: 'tmp/nested/',
           war_name: 'custom_options.war',
           war_compression: 'NONE',
           war_extras: [
