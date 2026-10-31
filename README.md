@@ -3,7 +3,7 @@
 > Pure JavaScript implementation for creating a WAR of your project for deployment on a JVM servlet container. Enjoy!
 
 ## Getting Started
-This plugin requires Grunt `~0.4.2`
+This plugin requires Node.js `>= 20.19.0` and Grunt (tested with `1.6`).
 
 ```shell
 npm install grunt-war --save-dev
@@ -133,7 +133,7 @@ module.exports = function ( grunt ) {
 Type: `'string'`
 Default value: `'test'`
 
-This is the folder that the war will be placed in. This folder has to exist before this task is run.
+This is the folder that the war will be placed in. It is created, along with any missing parent folders, if it does not exist.
 
 #### options.war_name
 Type: `'string'`
@@ -154,7 +154,7 @@ either be a `string` or a function that returns a `string`.
 Type: `'boolean'`
 Default value: `false`
 
-Logs progress to the grunt console log.
+Logs each entry as it is added to the WAR. Without it, entries are logged only with `grunt --debug`.
 
 #### options.war_compression
 Type: `'string'`
@@ -217,6 +217,14 @@ included directly into the generated web.xml.
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+
+#### 0.6.0
+* Supports archiver 7 and 8. Fresh installs had been failing with "archiver is not a function" since archiver 8.
+* Requires Node.js 20.19.0 or later.
+* `war_dist_folder` is now created along with any missing parent folders.
+* `war_verbose` now logs each entry added to the WAR.
+* Errors while writing the WAR now fail the task instead of crashing Grunt or reporting success.
+* Added real tests.
 
 #### 0.5.1
 * Sample webxml_webapp_extras. Thanks to @pthaden
